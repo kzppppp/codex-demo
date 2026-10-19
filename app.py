@@ -5,6 +5,7 @@ import math
 import re
 from datetime import datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import httpx
 import pandas as pd
@@ -41,6 +42,7 @@ SYMBOLS: dict[str, dict[str, str]] = {
 
 QUOTE_FIELDS = "f43,f57,f58,f169,f170,f46,f44,f45,f47,f48,f60,f71,f168,f171"
 KLINE_FIELDS = "f51,f52,f53,f54,f55,f56,f57,f58,f59,f60"
+SHANGHAI_TZ = ZoneInfo("Asia/Shanghai")
 CODE_RE = re.compile(r"^\d{6}$")
 
 
@@ -107,7 +109,7 @@ async def fetch_quote(info: dict[str, str]) -> dict[str, Any]:
         "volume": num("f47"),
         "amount": num("f48"),
         "turnover": num("f168", 100),
-        "timestamp": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "timestamp": datetime.now(SHANGHAI_TZ).isoformat(timespec="seconds"),
     }
 
 
@@ -269,7 +271,7 @@ def build_analysis(info: dict[str, str], quote: dict[str, Any], df: pd.DataFrame
             "action": action,
             "confidence": confidence,
             "reasons": reasons,
-            "updated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "updated_at": datetime.now(SHANGHAI_TZ).isoformat(timespec="seconds"),
         },
         "indicators": {
             "sma5": sma5,
@@ -323,4 +325,4 @@ async def _fetch_inputs(info: dict[str, str]) -> tuple[dict[str, Any], pd.DataFr
 
 @app.get("/api/health")
 async def health() -> dict[str, str]:
-    return {"status": "ok", "time": datetime.now().astimezone().isoformat(timespec="seconds")}
+    return {"status": "ok", "time": datetime.now(SHANGHAI_TZ).isoformat(timespec="seconds")}
