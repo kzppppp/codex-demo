@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ETF Quant T Advisor</title>
+  <style>
+    :root{--bg:#07111f;--panel:#0e1c2f;--panel2:#12243b;--line:#203956;--text:#eef6ff;--muted:#8fa6bf;--green:#40d49b;--red:#ff7184;--yellow:#f7c55b;--blue:#66a8ff;--shadow:0 16px 40px rgba(0,0,0,.22)}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 15% 0,#15365b 0,#07111f 45%);color:var(--text);font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+    .wrap{max-width:1180px;margin:auto;padding:28px 18px 56px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}.eyebrow{color:var(--blue);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}.title{font-size:32px;line-height:1.2;margin:6px 0}.sub{color:var(--muted);margin:0}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.controls input,.controls button{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:0 13px;font-size:14px}.controls input{width:150px}.controls button{cursor:pointer;background:var(--blue);color:#07111f;border-color:transparent;font-weight:700}.controls button:hover{filter:brightness(1.08)}.grid{display:grid;gap:14px}.quote-grid{grid-template-columns:repeat(4,1fr)}.main-grid{grid-template-columns:1.35fr .65fr;margin-top:14px}.panel{background:linear-gradient(145deg,rgba(18,36,59,.95),rgba(10,24,42,.95));border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.metric-label{color:var(--muted);font-size:12px}.metric-value{font-size:27px;font-weight:750;margin-top:4px}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--muted)}.caution{color:var(--yellow)}.panel-title{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;margin-bottom:14px}.panel-title small{color:var(--muted);font-weight:400}.signal-card{min-height:260px}.signal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.badge{display:inline-flex;align-items:center;border-radius:999px;padding:6px 11px;background:#183552;font-weight:700}.badge.positive{background:rgba(64,212,155,.14)}.badge.negative{background:rgba(255,113,132,.14)}.badge.caution{background:rgba(247,197,91,.14)}.score{font-size:14px;color:var(--muted)}.action{font-size:21px;font-weight:750;margin:20px 0 12px}.confidence{height:7px;background:#1a2e47;border-radius:9px;overflow:hidden}.confidence i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:9px}.reasons{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0;list-style:none}.reasons li{color:#c5d5e8;background:#142b46;border:1px solid #264564;border-radius:8px;padding:5px 8px;font-size:12px}.chart-wrap{height:330px}.chart-wrap svg{width:100%;height:100%;overflow:visible}.chart-grid{stroke:#1b3553;stroke-width:1}.chart-label{fill:#6d86a1;font-size:11px}.line-close{fill:none;stroke:var(--blue);stroke-width:2.5}.line-ma{fill:none;stroke:var(--yellow);stroke-width:1.8;stroke-dasharray:6 5}.legend{display:flex;gap:15px;color:var(--muted);font-size:12px;margin-top:5px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.indicator-grid{grid-template-columns:repeat(4,1fr)}.indicator{padding:12px;background:rgba(8,20,36,.6);border-radius:11px}.indicator b{display:block;font-size:18px;margin-top:3px}.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.plan div{background:rgba(8,20,36,.6);border-radius:11px;padding:12px}.plan b{display:block;font-size:18px}.note{color:var(--muted);font-size:12px;margin-top:13px}.footer{color:#7088a1;font-size:12px;margin-top:18px;text-align:center}.error{display:none;background:rgba(255,113,132,.12);border:1px solid rgba(255,113,132,.4);color:#ffb2bd;border-radius:10px;padding:10px;margin:12px 0}.loading{opacity:.55}.small{font-size:12px;color:var(--muted)}
+    @media(max-width:860px){.top{flex-direction:column}.controls{justify-content:flex-start}.quote-grid{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.indicator-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.wrap{padding:20px 12px 40px}.title{font-size:26px}.controls input{width:125px}.quote-grid{gap:9px}.panel{padding:14px}.chart-wrap{height:260px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div><div class="eyebrow">ETF QUANT / T ADVISOR</div><h1 class="title">ETF量化做T参考</h1><p class="sub">用实时行情 + 技术指标，给出可解释的方向和风险区间。</p></div>
+      <div class="controls"><input id="symbol" value="159915" inputmode="numeric" list="symbol-list" aria-label="ETF代码"/><button id="refresh">刷新行情</button><datalist id="symbol-list"></datalist></div>
+    </header>
+    <div id="error" class="error"></div>
+    <section class="grid quote-grid" id="quote-grid">
+      <div class="panel"><div class="metric-label">当前价格</div><div id="price" class="metric-value">--</div><div id="time" class="small">等待数据</div></div>
+      <div class="panel"><div class="metric-label">今日涨跌</div><div id="change" class="metric-value">--</div><div id="name" class="small">--</div></div>
+      <div class="panel"><div class="metric-label">今日最高 / 最低</div><div id="range" class="metric-value" style="font-size:20px">--</div><div class="small">公开行情接口</div></div>
+      <div class="panel"><div class="metric-label">成交量 / 换手率</div><div id="volume" class="metric-value" style="font-size:20px">--</div><div class="small">每20秒自动刷新</div></div>
+    </section>
+    <section class="grid main-grid">
+      <div class="panel"><div class="panel-title">近60个交易日走势 <small id="chart-date">--</small></div><div class="chart-wrap"><svg id="chart" viewBox="0 0 900 300" preserveAspectRatio="none"></svg></div><div class="legend"><span><i class="dot" style="background:var(--blue)"></i>收盘价</span><span><i class="dot" style="background:var(--yellow)"></i>20日均线</span></div></div>
+      <div class="panel signal-card"><div class="panel-title">量化信号 <small id="updated">--</small></div><div class="signal-head"><span id="signal-badge" class="badge neutral">加载中</span><span id="score" class="score">评分 --/5</span></div><div id="action" class="action">正在读取公开行情…</div><div class="small">参考置信度 <b id="confidence">--</b></div><div class="confidence"><i id="confidence-bar" style="width:0"></i></div><ul id="reasons" class="reasons"></ul></div>
+    </section>
+    <section class="panel" style="margin-top:14px"><div class="panel-title">核心指标</div><div class="grid indicator-grid"><div class="indicator"><span class="metric-label">RSI(14)</span><b id="rsi">--</b></div><div class="indicator"><span class="metric-label">MACD</span><b id="macd">--</b></div><div class="indicator"><span class="metric-label">MA5 / MA20</span><b id="ma">--</b></div><div class="indicator"><span class="metric-label">量比 / 5日涨跌</span><b id="momentum">--</b></div></div></section>
+    <section class="panel" style="margin-top:14px"><div class="panel-title">做T风险区间 <small>按ATR波动估算</small></div><div class="plan"><div><span class="metric-label">回踩参考区</span><b id="entry">--</b></div><div><span class="metric-label">参考止损线</span><b id="stop" class="negative">--</b></div><div><span class="metric-label">参考止盈线</span><b id="target" class="positive">--</b></div><div><span class="metric-label">仓位规则</span><b style="font-size:14px">单次 ≤ 可用资金25%</b></div></div><p id="position-rule" class="note"></p></section>
+    <div class="footer">本页面仅用于研究参考，不构成投资建议，不保证预测准确。ETF会受到跳空、跟踪误差、流动性和交易成本影响。</div>
+  </main>
+<script>
+const $ = (id) => document.getElementById(id);
+let timer;
+const fmt = (n, digits=4) => n == null || Number.isNaN(Number(n)) ? '--' : Number(n).toFixed(digits);
+const pct = (n) => n == null ? '--' : `${Number(n)>=0?'+':''}${Number(n).toFixed(2)}%`;
+const cls = (n) => Number(n)>0 ? 'positive' : Number(n)<0 ? 'negative' : 'neutral';
+function showError(message){ $('error').textContent = message; $('error').style.display='block'; }
+function clearError(){ $('error').style.display='none'; }
+function drawChart(points){
+  const svg=$('chart'); svg.innerHTML=''; if(!points?.length) return;
+  const W=900,H=300,p={l:42,r:12,t:12,b:28}; const vals=points.flatMap(x=>[x.close,x.sma20]).filter(x=>x!=null);
+  const min=Math.min(...vals), max=Math.max(...vals), range=(max-min)||1;
+  const x=i=>p.l+(W-p.l-p.r)*(i/(points.length-1)); const y=v=>p.t+(H-p.t-p.b)*(1-(v-min)/range);
+  for(let i=0;i<4;i++){const yy=p.t+(H-p.t-p.b)*i/3; const line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',p.l);line.setAttribute('x2',W-p.r);line.setAttribute('y1',yy);line.setAttribute('y2',yy);line.setAttribute('class','chart-grid');svg.appendChild(line);const tx=document.createElementNS('http://www.w3.org/2000/svg','text');tx.textContent=(max-(max-min)*i/3).toFixed(3);tx.setAttribute('x',3);tx.setAttribute('y',yy+4);tx.setAttribute('class','chart-label');svg.appendChild(tx)}
+  const path=(key,cl)=>{const d=points.map((pt,i)=>pt[key]==null?null:`${i?'L':'M'} ${x(i)} ${y(pt[key])}`).filter(Boolean).join(' ');const el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('d',d);el.setAttribute('class',cl);svg.appendChild(el)}; path('close','line-close'); path('sma20','line-ma');
+  $('chart-date').textContent=`${points[0].date} → ${points.at(-1).date}`;
+}
+async function loadSymbols(){try{const r=await fetch('/api/symbols');const rows=await r.json();$('symbol-list').innerHTML=rows.map(x=>`<option value="${x.code}">${x.name}</option>`).join('')}catch(e){}}
+async function load(){
+  clearError(); $('quote-grid').classList.add('loading'); const code=$('symbol').value.trim();
+  try{const res=await fetch(`/api/analyze?symbol=${encodeURIComponent(code)}`);const data=await res.json();if(!res.ok) throw new Error(data.detail||'行情读取失败');
+    const q=data.quote,s=data.signal,i=data.indicators,p=data.trade_plan;
+    $('price').textContent=fmt(q.price); $('change').textContent=`${fmt(q.change_amount,4)} (${pct(q.change_percent)})`; $('change').className=`metric-value ${cls(q.change_percent)}`; $('name').textContent=`${data.symbol.name} · ${data.symbol.code}`; $('range').textContent=`${fmt(q.high)} / ${fmt(q.low)}`; $('volume').textContent=`${fmt(q.volume,0)} / ${q.turnover==null?'--':fmt(q.turnover,2)+'%'}`; $('time').textContent=`更新 ${q.timestamp}`;
+    $('signal-badge').textContent=s.label; $('signal-badge').className=`badge ${s.tone}`; $('score').textContent=`评分 ${s.score}/${s.max_score}`; $('action').textContent=s.action; $('action').className=`action ${s.tone}`; $('confidence').textContent=`${s.confidence}%`; $('confidence-bar').style.width=`${s.confidence}%`; $('updated').textContent=s.updated_at;
+    $('reasons').innerHTML=s.reasons.map(x=>`<li>${x}</li>`).join(''); $('rsi').textContent=fmt(i.rsi14,2); $('macd').textContent=fmt(i.macd,5); $('ma').textContent=`${fmt(i.sma5)} / ${fmt(i.sma20)}`; $('momentum').textContent=`${fmt(i.vol_ratio,2)}x / ${pct(i.return_5d)}`; $('entry').textContent=`${fmt(p.entry_low)} – ${fmt(p.entry_high)}`; $('stop').textContent=fmt(p.stop); $('target').textContent=fmt(p.target); $('position-rule').textContent=p.position_rule; drawChart(data.chart);
+  }catch(e){showError(e.message||'读取失败，请稍后重试')} finally{$('quote-grid').classList.remove('loading')}
+}
+$('refresh').addEventListener('click',load); $('symbol').addEventListener('keydown',e=>{if(e.key==='Enter') load()}); loadSymbols(); load(); timer=setInterval(load,20000);
+</script>
+</body>
+</html>
