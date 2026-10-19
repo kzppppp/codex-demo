@@ -4,6 +4,7 @@ import asyncio
 import math
 import re
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -14,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+BASE_DIR = Path(__file__).resolve().parent
 app = FastAPI(title="ETF Quant T Advisor", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
@@ -22,7 +24,7 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 SYMBOLS: dict[str, dict[str, str]] = {
     "510300": {"name": "沪深300ETF", "market": "1"},
@@ -297,7 +299,7 @@ def build_analysis(info: dict[str, str], quote: dict[str, Any], df: pd.DataFrame
 
 @app.get("/")
 async def index() -> FileResponse:
-    return FileResponse("static/index.html")
+    return FileResponse(str(BASE_DIR / "static" / "index.html"))
 
 
 @app.get("/api/symbols")
