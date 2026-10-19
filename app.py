@@ -246,7 +246,7 @@ def build_analysis(info: dict[str, str], quote: dict[str, Any], df: pd.DataFrame
     else:
         label, tone, action = "中性", "neutral", "观望，等待方向确认"
 
-    confidence = min(85, 52 + abs(score) * 7)
+    strength = min(85, 52 + abs(score) * 7)
     entry_low = price - atr * 0.55
     entry_high = price - atr * 0.15
     stop = price - atr * 1.5
@@ -271,7 +271,7 @@ def build_analysis(info: dict[str, str], quote: dict[str, Any], df: pd.DataFrame
             "label": label,
             "tone": tone,
             "action": action,
-            "confidence": confidence,
+            "strength": strength,
             "reasons": reasons,
             "updated_at": datetime.now(SHANGHAI_TZ).isoformat(timespec="seconds"),
         },
