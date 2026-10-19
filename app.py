@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import math
 import re
 from datetime import datetime, timedelta
@@ -159,7 +160,7 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
     delta = out["close"].diff()
     gain = delta.clip(lower=0).rolling(14).mean()
     loss = (-delta.clip(upper=0)).rolling(14).mean()
-    rs = gain / loss.replace(0, pd.NA)
+    rs = gain / loss.replace(0, float("nan"))
     out["rsi14"] = (100 - (100 / (1 + rs))).fillna(50)
     prev_close = out["close"].shift(1)
     true_range = pd.concat(
@@ -316,7 +317,7 @@ async def analyze(symbol: str = Query("159915")) -> dict[str, Any]:
 
 
 async def _fetch_inputs(info: dict[str, str]) -> tuple[dict[str, Any], pd.DataFrame]:
-    quote_data, history = await __import__("asyncio").gather(fetch_quote(info), fetch_history(info))
+    quote_data, history = await asyncio.gather(fetch_quote(info), fetch_history(info))
     return quote_data, history
 
 
