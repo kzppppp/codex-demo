@@ -3,64 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ETF Quant T Advisor</title>
+  <title>ETF Quant · 做T筛选器</title>
   <style>
     :root{--bg:#07111f;--panel:#0e1c2f;--panel2:#12243b;--line:#203956;--text:#eef6ff;--muted:#8fa6bf;--green:#40d49b;--red:#ff7184;--yellow:#f7c55b;--blue:#66a8ff;--shadow:0 16px 40px rgba(0,0,0,.22)}
-    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 15% 0,#15365b 0,#07111f 45%);color:var(--text);font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
-    .wrap{max-width:1180px;margin:auto;padding:28px 18px 56px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}.eyebrow{color:var(--blue);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}.title{font-size:32px;line-height:1.2;margin:6px 0}.sub{color:var(--muted);margin:0}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.controls input,.controls button{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:0 13px;font-size:14px}.controls input{width:150px}.controls button{cursor:pointer;background:var(--blue);color:#07111f;border-color:transparent;font-weight:700}.controls button:hover{filter:brightness(1.08)}.grid{display:grid;gap:14px}.quote-grid{grid-template-columns:repeat(4,1fr)}.main-grid{grid-template-columns:1.35fr .65fr;margin-top:14px}.panel{background:linear-gradient(145deg,rgba(18,36,59,.95),rgba(10,24,42,.95));border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.metric-label{color:var(--muted);font-size:12px}.metric-value{font-size:27px;font-weight:750;margin-top:4px}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--muted)}.caution{color:var(--yellow)}.panel-title{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;margin-bottom:14px}.panel-title small{color:var(--muted);font-weight:400}.signal-card{min-height:260px}.signal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.badge{display:inline-flex;align-items:center;border-radius:999px;padding:6px 11px;background:#183552;font-weight:700}.badge.positive{background:rgba(64,212,155,.14)}.badge.negative{background:rgba(255,113,132,.14)}.badge.caution{background:rgba(247,197,91,.14)}.score{font-size:14px;color:var(--muted)}.action{font-size:21px;font-weight:750;margin:20px 0 12px}.confidence{height:7px;background:#1a2e47;border-radius:9px;overflow:hidden}.confidence i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:9px}.reasons{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0;list-style:none}.reasons li{color:#c5d5e8;background:#142b46;border:1px solid #264564;border-radius:8px;padding:5px 8px;font-size:12px}.chart-wrap{height:330px}.chart-wrap svg{width:100%;height:100%;overflow:visible}.chart-grid{stroke:#1b3553;stroke-width:1}.chart-label{fill:#6d86a1;font-size:11px}.line-close{fill:none;stroke:var(--blue);stroke-width:2.5}.line-ma{fill:none;stroke:var(--yellow);stroke-width:1.8;stroke-dasharray:6 5}.legend{display:flex;gap:15px;color:var(--muted);font-size:12px;margin-top:5px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.indicator-grid{grid-template-columns:repeat(4,1fr)}.indicator{padding:12px;background:rgba(8,20,36,.6);border-radius:11px}.indicator b{display:block;font-size:18px;margin-top:3px}.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.plan div{background:rgba(8,20,36,.6);border-radius:11px;padding:12px}.plan b{display:block;font-size:18px}.note{color:var(--muted);font-size:12px;margin-top:13px}.footer{color:#7088a1;font-size:12px;margin-top:18px;text-align:center}.error{display:none;background:rgba(255,113,132,.12);border:1px solid rgba(255,113,132,.4);color:#ffb2bd;border-radius:10px;padding:10px;margin:12px 0}.loading{opacity:.55}.small{font-size:12px;color:var(--muted)}
-    @media(max-width:860px){.top{flex-direction:column}.controls{justify-content:flex-start}.quote-grid{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.indicator-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:480px){.wrap{padding:20px 12px 40px}.title{font-size:26px}.controls input{width:125px}.quote-grid{gap:9px}.panel{padding:14px}.chart-wrap{height:260px}}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 15% 0,#15365b 0,#07111f 46%);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+    button,input{font:inherit}.shell{max-width:1320px;margin:auto;padding:22px 18px 42px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}.eyebrow{color:var(--blue);font-size:11px;letter-spacing:.16em;font-weight:800}.title{font-size:30px;line-height:1.2;margin:5px 0 3px}.sub{color:var(--muted);margin:0;max-width:760px}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.toolbar input,.toolbar button{height:40px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);padding:0 12px}.toolbar input{width:125px}.toolbar button{cursor:pointer;background:var(--blue);color:#07111f;border-color:transparent;font-weight:750}.toolbar button.secondary{background:var(--panel);color:var(--text);border-color:var(--line)}.toolbar button:hover{filter:brightness(1.1)}.status{display:inline-flex;gap:6px;align-items:center;color:var(--muted);font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:rgba(14,28,47,.72)}.status i{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}.status.stale i{background:var(--yellow)}
+    .error{display:none;background:rgba(255,113,132,.13);border:1px solid rgba(255,113,132,.38);color:#ffb8c2;border-radius:9px;padding:9px 11px;margin:0 0 14px}.grid{display:grid;gap:14px}.top-grid{grid-template-columns:minmax(0,1.55fr) minmax(340px,.75fr)}.lower-grid{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);margin-top:14px}.panel{background:linear-gradient(145deg,rgba(18,36,59,.96),rgba(10,24,42,.96));border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.panel-title{font-weight:800;font-size:15px}.panel-sub,.small{font-size:12px;color:var(--muted)}.scan-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.summary-box{background:rgba(8,20,36,.62);border-radius:10px;padding:10px 11px}.summary-box span{display:block;color:var(--muted);font-size:11px}.summary-box b{display:block;font-size:20px;margin-top:2px}.positive{color:var(--green)}.negative{color:var(--red)}.caution{color:var(--yellow)}.neutral{color:var(--muted)}.table-wrap{overflow:auto;border:1px solid #1b3553;border-radius:10px}.scan-table{width:100%;border-collapse:collapse;min-width:680px}.scan-table th{background:#0b1a2d;color:var(--muted);font-weight:600;font-size:11px;text-align:left;padding:9px 10px;white-space:nowrap}.scan-table td{padding:10px;border-top:1px solid rgba(32,57,86,.72);white-space:nowrap}.scan-table tr{cursor:pointer}.scan-table tbody tr:hover,.scan-table tbody tr.active{background:rgba(102,168,255,.1)}.scan-table .name{font-weight:750}.scan-table .code{display:block;color:var(--muted);font-size:11px}.signal-pill{display:inline-flex;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}.signal-pill.positive{background:rgba(64,212,155,.14)}.signal-pill.negative{background:rgba(255,113,132,.14)}.signal-pill.caution{background:rgba(247,197,91,.14)}.score-cell{font-weight:850;font-variant-numeric:tabular-nums}.score-track{height:5px;width:72px;background:#1a2e47;border-radius:9px;margin-top:5px}.score-track i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--yellow),var(--green))}.decision{min-height:100%}.selected-name{font-size:21px;font-weight:850;margin:3px 0}.selected-code{color:var(--muted);font-size:12px}.price-row{display:flex;align-items:baseline;gap:10px;margin:12px 0 8px}.price{font-size:32px;font-weight:850;font-variant-numeric:tabular-nums}.change{font-weight:800}.decision-main{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0;margin:12px 0}.decision-label{font-size:20px;font-weight:850;margin:7px 0 4px}.decision-action{color:#c9d8e8}.score-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.score-big{font-size:26px;font-weight:850}.confidence{height:7px;background:#1a2e47;border-radius:9px;overflow:hidden;margin:6px 0 4px}.confidence i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:9px}.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.level{background:rgba(8,20,36,.62);border-radius:9px;padding:9px}.level span{font-size:11px;color:var(--muted);display:block}.level b{font-size:16px;font-variant-numeric:tabular-nums}.level.stop b{color:var(--red)}.level.target b{color:var(--green)}.reasons{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}.reasons li{font-size:12px;color:#c7d7e8;padding-left:15px;position:relative}.reasons li:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--blue);position:absolute;left:1px;top:8px}.chart-wrap{height:335px}.chart-wrap svg{width:100%;height:100%;overflow:visible}.chart-grid{stroke:#1b3553;stroke-width:1}.chart-label{fill:#6d86a1;font-size:11px}.line-close{fill:none;stroke:var(--blue);stroke-width:2.5}.line-ma{fill:none;stroke:var(--yellow);stroke-width:1.8;stroke-dasharray:6 5}.legend{display:flex;gap:15px;color:var(--muted);font-size:12px;margin-top:4px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.metric{background:rgba(8,20,36,.62);border-radius:9px;padding:10px}.metric span{display:block;color:var(--muted);font-size:11px}.metric b{display:block;font-size:16px;margin-top:2px;font-variant-numeric:tabular-nums}.backtest{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.bt-box{background:rgba(8,20,36,.62);border-radius:9px;padding:11px}.bt-box span{display:block;color:var(--muted);font-size:11px}.bt-box b{display:block;font-size:19px;margin-top:2px}.tracking{margin-top:10px;color:#c7d7e8;font-size:12px;background:rgba(8,20,36,.45);padding:10px;border-radius:9px}.footer{color:#7088a1;font-size:12px;text-align:center;margin-top:16px}.loading{opacity:.55}.empty{color:var(--muted);text-align:center;padding:25px}.tag{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;font-size:11px;color:var(--muted);background:#142b46}.right-note{text-align:right}.refreshing{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:980px){.top-grid,.lower-grid{grid-template-columns:1fr}.decision{min-height:0}.topbar{flex-direction:column}.toolbar{justify-content:flex-start}.right-note{text-align:left}}
+    @media(max-width:560px){.shell{padding:16px 11px 32px}.title{font-size:25px}.scan-summary{grid-template-columns:repeat(2,1fr)}.levels{grid-template-columns:1fr 1fr 1fr}.metric-grid{grid-template-columns:repeat(2,1fr)}.chart-wrap{height:270px}.toolbar input{width:112px}.panel{padding:13px}}
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="top">
-      <div><div class="eyebrow">ETF QUANT / T ADVISOR</div><h1 class="title">ETF量化做T参考</h1><p class="sub">用实时行情 + 技术指标，给出可解释的方向和风险区间。</p></div>
-      <div class="controls"><input id="symbol" value="159915" inputmode="numeric" list="symbol-list" aria-label="ETF代码"/><button id="refresh">刷新行情</button><datalist id="symbol-list"></datalist></div>
-    </header>
-    <div id="error" class="error"></div>
-    <section class="grid quote-grid" id="quote-grid">
-      <div class="panel"><div class="metric-label">当前价格</div><div id="price" class="metric-value">--</div><div id="time" class="small">等待数据</div></div>
-      <div class="panel"><div class="metric-label">今日涨跌</div><div id="change" class="metric-value">--</div><div id="name" class="small">--</div></div>
-      <div class="panel"><div class="metric-label">今日最高 / 最低</div><div id="range" class="metric-value" style="font-size:20px">--</div><div class="small">公开行情接口</div></div>
-      <div class="panel"><div class="metric-label">成交量 / 换手率</div><div id="volume" class="metric-value" style="font-size:20px">--</div><div class="small">每20秒自动刷新</div></div>
-    </section>
-    <section class="grid main-grid">
-      <div class="panel"><div class="panel-title">近60个交易日走势 <small id="chart-date">--</small></div><div class="chart-wrap"><svg id="chart" viewBox="0 0 900 300" preserveAspectRatio="none"></svg></div><div class="legend"><span><i class="dot" style="background:var(--blue)"></i>收盘价</span><span><i class="dot" style="background:var(--yellow)"></i>20日均线</span></div></div>
-      <div class="panel signal-card"><div class="panel-title">量化信号 <small id="updated">--</small></div><div class="signal-head"><span id="signal-badge" class="badge neutral">加载中</span><span id="score" class="score">评分 --/5</span></div><div id="action" class="action">正在读取公开行情…</div><div class="small">参考强度 <b id="confidence">--</b></div><div class="confidence"><i id="confidence-bar" style="width:0"></i></div><ul id="reasons" class="reasons"></ul></div>
-    </section>
-    <section class="panel" style="margin-top:14px"><div class="panel-title">核心指标</div><div class="grid indicator-grid"><div class="indicator"><span class="metric-label">RSI(14)</span><b id="rsi">--</b></div><div class="indicator"><span class="metric-label">MACD</span><b id="macd">--</b></div><div class="indicator"><span class="metric-label">MA5 / MA20</span><b id="ma">--</b></div><div class="indicator"><span class="metric-label">量比 / 5日涨跌</span><b id="momentum">--</b></div></div></section>
-    <section class="panel" style="margin-top:14px"><div class="panel-title">做T风险区间 <small>按ATR波动估算</small></div><div class="plan"><div><span class="metric-label">回踩参考区</span><b id="entry">--</b></div><div><span class="metric-label">参考止损线</span><b id="stop" class="negative">--</b></div><div><span class="metric-label">参考止盈线</span><b id="target" class="positive">--</b></div><div><span class="metric-label">仓位规则</span><b style="font-size:14px">单次 ≤ 可用资金25%</b></div></div><p id="position-rule" class="note"></p></section>
-    <div class="footer">本页面仅用于研究参考，不构成投资建议，不保证预测准确。ETF会受到跳空、跟踪误差、流动性和交易成本影响。</div>
-  </main>
+<main class="shell">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">ETF QUANT / T FILTER</div>
+      <h1 class="title">ETF 做T候选筛选器</h1>
+      <p class="sub">先扫描全池，再看单只：评分来自同一套规则，胜率来自历史滚动验证，实时价格只用于校准交易区间。</p>
+    </div>
+    <div class="toolbar">
+      <span id="status" class="status"><i></i><span>准备连接行情</span></span>
+      <input id="symbol" value="159915" inputmode="numeric" list="symbol-list" aria-label="ETF代码" />
+      <button id="open">查看单只</button>
+      <button id="refresh" class="secondary">刷新扫描</button>
+      <datalist id="symbol-list"></datalist>
+    </div>
+  </header>
+
+  <div id="error" class="error"></div>
+
+  <section class="grid top-grid">
+    <div class="panel">
+      <div class="panel-head"><div><div class="panel-title">今日候选池</div><div id="scan-meta" class="panel-sub">正在读取实时行情和历史数据…</div></div><div class="right-note small">只把“买入候选”列为可研究对象</div></div>
+      <div class="scan-summary">
+        <div class="summary-box"><span>买入候选</span><b id="buy-count" class="positive">--</b></div>
+        <div class="summary-box"><span>等待确认</span><b id="wait-count" class="caution">--</b></div>
+        <div class="summary-box"><span>回避/减仓</span><b id="reduce-count" class="negative">--</b></div>
+        <div class="summary-box"><span>最高评分</span><b id="top-score">--</b></div>
+      </div>
+      <div class="table-wrap">
+        <table class="scan-table">
+          <thead><tr><th>ETF</th><th>评分</th><th>信号</th><th>现价 / 今日</th><th>历史胜率</th><th>波动 / 校准</th></tr></thead>
+          <tbody id="scan-body"><tr><td colspan="6" class="empty">正在扫描…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="panel decision">
+      <div class="panel-head"><div><div class="panel-title">单只决策卡</div><div class="panel-sub">点击左侧任意 ETF 查看详情</div></div><span id="selected-group" class="tag">--</span></div>
+      <div id="selected-name" class="selected-name">--</div><div id="selected-code" class="selected-code">--</div>
+      <div class="price-row"><span id="price" class="price">--</span><span id="change" class="change">--</span></div>
+      <div class="decision-main"><div id="signal-pill" class="signal-pill neutral">加载中</div><div id="decision-label" class="decision-label">正在读取信号…</div><div id="decision-action" class="decision-action">--</div><div class="score-row"><span class="small">规则评分</span><b id="score" class="score-big">--</b></div><div class="confidence"><i id="score-bar" style="width:0"></i></div><div id="sample" class="small">历史样本 --</div></div>
+      <div class="levels"><div class="level"><span>回踩区</span><b id="entry">--</b></div><div class="level stop"><span>止损参考</span><b id="stop">--</b></div><div class="level target"><span>目标参考</span><b id="target">--</b></div></div>
+      <div class="small">为什么：</div><ul id="reasons" class="reasons"><li>--</li></ul>
+    </aside>
+  </section>
+
+  <section class="grid lower-grid">
+    <div class="panel"><div class="panel-head"><div><div class="panel-title">近90个交易日</div><div id="chart-date" class="panel-sub">--</div></div><div class="legend"><span><i class="dot" style="background:var(--blue)"></i>收盘</span><span><i class="dot" style="background:var(--yellow)"></i>MA20</span></div></div><div class="chart-wrap"><svg id="chart" viewBox="0 0 900 300" preserveAspectRatio="none"></svg></div></div>
+    <div class="panel"><div class="panel-head"><div><div class="panel-title">验证与风险</div><div class="panel-sub">t 日发出信号，t+1 日结算；已扣 12bp 摩擦成本</div></div></div><div class="backtest"><div class="bt-box"><span>历史胜率</span><b id="bt-win">--</b></div><div class="bt-box"><span>有效样本</span><b id="bt-trades">--</b></div><div class="bt-box"><span>平均净收益</span><b id="bt-avg">--</b></div><div class="bt-box"><span>最大回撤</span><b id="bt-dd">--</b></div></div><div class="metric-grid" style="margin-top:10px"><div class="metric"><span>RSI(14)</span><b id="rsi">--</b></div><div class="metric"><span>MA5 / MA20</span><b id="ma">--</b></div><div class="metric"><span>量比</span><b id="vol">--</b></div><div class="metric"><span>ATR波动</span><b id="atr">--</b></div></div><div id="tracking" class="tracking">等待数据…</div></div>
+  </section>
+  <div class="footer">数据源：Eastmoney 公开实时报价 + 复权日线。页面只提供研究参考，不自动下单，也不保证收益；历史胜率不代表未来表现。</div>
+</main>
 <script>
-const $ = (id) => document.getElementById(id);
-let timer;
-const fmt = (n, digits=4) => n == null || Number.isNaN(Number(n)) ? '--' : Number(n).toFixed(digits);
-const pct = (n) => n == null ? '--' : `${Number(n)>=0?'+':''}${Number(n).toFixed(2)}%`;
-const cls = (n) => Number(n)>0 ? 'positive' : Number(n)<0 ? 'negative' : 'neutral';
-function showError(message){ $('error').textContent = message; $('error').style.display='block'; }
-function clearError(){ $('error').style.display='none'; }
-function drawChart(points){
-  const svg=$('chart'); svg.innerHTML=''; if(!points?.length) return;
-  const W=900,H=300,p={l:42,r:12,t:12,b:28}; const vals=points.flatMap(x=>[x.close,x.sma20]).filter(x=>x!=null);
-  const min=Math.min(...vals), max=Math.max(...vals), range=(max-min)||1;
-  const x=i=>p.l+(W-p.l-p.r)*(i/(points.length-1)); const y=v=>p.t+(H-p.t-p.b)*(1-(v-min)/range);
-  for(let i=0;i<4;i++){const yy=p.t+(H-p.t-p.b)*i/3; const line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',p.l);line.setAttribute('x2',W-p.r);line.setAttribute('y1',yy);line.setAttribute('y2',yy);line.setAttribute('class','chart-grid');svg.appendChild(line);const tx=document.createElementNS('http://www.w3.org/2000/svg','text');tx.textContent=(max-(max-min)*i/3).toFixed(3);tx.setAttribute('x',3);tx.setAttribute('y',yy+4);tx.setAttribute('class','chart-label');svg.appendChild(tx)}
-  const path=(key,cl)=>{const d=points.map((pt,i)=>pt[key]==null?null:`${i?'L':'M'} ${x(i)} ${y(pt[key])}`).filter(Boolean).join(' ');const el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('d',d);el.setAttribute('class',cl);svg.appendChild(el)}; path('close','line-close'); path('sma20','line-ma');
+const $=id=>document.getElementById(id);
+let selectedCode='159915', refreshTimer=null, requestNo=0;
+const num=(v,d=3)=>v==null||Number.isNaN(Number(v))?'--':Number(v).toFixed(d);
+const pct=v=>v==null?'--':`${Number(v)>=0?'+':''}${Number(v).toFixed(2)}%`;
+const toneClass=t=>t==='positive'?'positive':t==='negative'?'negative':t==='caution'?'caution':'neutral';
+function showError(msg){$('error').textContent=msg;$('error').style.display='block'}
+function clearError(){$('error').style.display='none'}
+function setStatus(text,stale=false){$('status').classList.toggle('stale',stale);$('status').querySelector('span').textContent=text}
+function sideLabel(side){return side==='BUY'?'买入候选':side==='REDUCE'?'回避/减仓':'等待'}
+function renderScan(rows){
+  const body=$('scan-body');
+  if(!rows?.length){body.innerHTML='<tr><td colspan="6" class="empty">没有拿到可用行情，请稍后重试</td></tr>';return}
+  const buy=rows.filter(x=>x.side==='BUY').length, wait=rows.filter(x=>x.side==='WAIT').length, reduce=rows.filter(x=>x.side==='REDUCE').length;
+  $('buy-count').textContent=buy;$('wait-count').textContent=wait;$('reduce-count').textContent=reduce;$('top-score').textContent=Math.max(...rows.map(x=>x.score));
+  body.innerHTML=rows.map(x=>{
+    const active=x.code===selectedCode, tone=toneClass(x.tone), win=x.backtest_win_rate==null?'样本不足':`${num(x.backtest_win_rate,1)}%`;
+    return `<tr data-code="${x.code}" class="${active?'active':''}"><td><span class="name">${x.name}</span><span class="code">${x.code} · ${x.group||'自定义'}</span></td><td><span class="score-cell">${x.score}</span><div class="score-track"><i style="width:${x.score}%"></i></div></td><td><span class="signal-pill ${tone}">${sideLabel(x.side)}</span></td><td><b>${num(x.price)}</b><br><span class="small ${Number(x.change_percent)>=0?'positive':'negative'}">${pct(x.change_percent)}</span></td><td>${win}<br><span class="small">${x.sample_trades||0}次</span></td><td>${num(x.atr_pct,2)}%<br><span class="small ${Math.abs(x.quote_vs_daily_close_pct||0)>.8?'caution':'neutral'}">价差 ${pct(x.quote_vs_daily_close_pct)}</span></td></tr>`;
+  }).join('');
+  body.querySelectorAll('tr[data-code]').forEach(tr=>tr.addEventListener('click',()=>{selectedCode=tr.dataset.code;loadAnalysis(selectedCode);renderScan(rows)}));
+}
+function renderChart(points){
+  const svg=$('chart');svg.innerHTML='';if(!points?.length)return;
+  const W=900,H=300,p={l:44,r:12,t:12,b:28};const vals=points.flatMap(x=>[x.close,x.sma20]).filter(x=>x!=null);const min=Math.min(...vals),max=Math.max(...vals),range=(max-min)||1;
+  const x=i=>p.l+(W-p.l-p.r)*(i/(points.length-1)),y=v=>p.t+(H-p.t-p.b)*(1-(v-min)/range);
+  for(let g=0;g<4;g++){const yy=p.t+(H-p.t-p.b)*g/3;const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',p.l);line.setAttribute('x2',W-p.r);line.setAttribute('y1',yy);line.setAttribute('y2',yy);line.setAttribute('class','chart-grid');svg.appendChild(line);const tx=document.createElementNS('http://www.w3.org/2000/svg','text');tx.textContent=Number(max-(max-min)*g/3).toFixed(3);tx.setAttribute('x',3);tx.setAttribute('y',yy+4);tx.setAttribute('class','chart-label');svg.appendChild(tx)}
+  const path=(key,cl)=>{const d=points.map((pt,i)=>pt[key]==null?null:`${i?'L':'M'} ${x(i)} ${y(pt[key])}`).filter(Boolean).join(' ');const el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('d',d);el.setAttribute('class',cl);svg.appendChild(el)};path('close','line-close');path('sma20','line-ma');
   $('chart-date').textContent=`${points[0].date} → ${points.at(-1).date}`;
 }
-async function loadSymbols(){try{const r=await fetch('/api/symbols');const rows=await r.json();$('symbol-list').innerHTML=rows.map(x=>`<option value="${x.code}">${x.name}</option>`).join('')}catch(e){}}
-async function load(){
-  clearError(); $('quote-grid').classList.add('loading'); const code=$('symbol').value.trim();
-  try{const res=await fetch(`/api/analyze?symbol=${encodeURIComponent(code)}`);const data=await res.json();if(!res.ok) throw new Error(data.detail||'行情读取失败');
-    const q=data.quote,s=data.signal,i=data.indicators,p=data.trade_plan;
-    $('price').textContent=fmt(q.price); $('change').textContent=`${fmt(q.change_amount,4)} (${pct(q.change_percent)})`; $('change').className=`metric-value ${cls(q.change_percent)}`; $('name').textContent=`${data.symbol.name} · ${data.symbol.code}`; $('range').textContent=`${fmt(q.high)} / ${fmt(q.low)}`; $('volume').textContent=`${fmt(q.volume,0)} / ${q.turnover==null?'--':fmt(q.turnover,2)+'%'}`; $('time').textContent=`更新 ${q.timestamp}`;
-    $('signal-badge').textContent=s.label; $('signal-badge').className=`badge ${s.tone}`; $('score').textContent=`评分 ${s.score}/${s.max_score}`; $('action').textContent=s.action; $('action').className=`action ${s.tone}`; $('confidence').textContent=`${s.strength}%`; $('confidence-bar').style.width=`${s.strength}%`; $('updated').textContent=s.updated_at;
-    $('reasons').innerHTML=s.reasons.map(x=>`<li>${x}</li>`).join(''); $('rsi').textContent=fmt(i.rsi14,2); $('macd').textContent=fmt(i.macd,5); $('ma').textContent=`${fmt(i.sma5)} / ${fmt(i.sma20)}`; $('momentum').textContent=`${fmt(i.vol_ratio,2)}x / ${pct(i.return_5d)}`; $('entry').textContent=`${fmt(p.entry_low)} – ${fmt(p.entry_high)}`; $('stop').textContent=fmt(p.stop); $('target').textContent=fmt(p.target); $('position-rule').textContent=p.position_rule; drawChart(data.chart);
-  }catch(e){showError(e.message||'读取失败，请稍后重试')} finally{$('quote-grid').classList.remove('loading')}
+function renderAnalysis(d){
+  const q=d.quote,s=d.signal,i=d.indicators,p=d.trade_plan,b=d.backtest,t=d.tracking;
+  $('selected-name').textContent=d.symbol.name;$('selected-code').textContent=`${d.symbol.code} · ${d.symbol.group||'自定义'}`;$('selected-group').textContent=d.symbol.group||'自定义';
+  $('price').textContent=num(q.price);$('change').textContent=`${num(q.change_amount)} (${pct(q.change_percent)})`;$('change').className=`change ${Number(q.change_percent)>=0?'positive':'negative'}`;
+  const tone=toneClass(s.tone);$('signal-pill').textContent=sideLabel(s.side);$('signal-pill').className=`signal-pill ${tone}`;$('decision-label').textContent=s.label;$('decision-label').className=`decision-label ${tone}`;$('decision-action').textContent=s.action;$('score').textContent=`${s.score}/100`;$('score-bar').style.width=`${s.score}%`;$('sample').textContent=`历史样本 ${s.sample_trades||0} 次 · 更新 ${s.updated_at}`;
+  $('entry').textContent=`${num(p.entry_low)}–${num(p.entry_high)}`;$('stop').textContent=num(p.stop);$('target').textContent=num(p.target);$('reasons').innerHTML=(s.reasons||[]).slice(0,6).map(x=>`<li>${x}</li>`).join('');
+  $('bt-win').textContent=b.win_rate==null?'样本不足':`${num(b.win_rate,1)}%`;$('bt-trades').textContent=b.trades||0;$('bt-avg').textContent=b.avg_return==null?'--':`${b.avg_return>=0?'+':''}${num(b.avg_return,3)}%`;$('bt-dd').textContent=b.max_drawdown==null?'--':`${num(b.max_drawdown,2)}%`;
+  $('rsi').textContent=num(i.rsi14,1);$('ma').textContent=`${num(i.sma5)} / ${num(i.sma20)}`;$('vol').textContent=`${num(i.vol_ratio,2)}x`;$('atr').textContent=`${num(i.atr_pct,2)}%`;
+  $('tracking').innerHTML=`${t.price_aligned?'✓ 实时价与最新日线在可接受范围内':'! 实时价与最新日线偏差较大，先不要追价'}。当前价 ${num(q.price)}，最新日线 ${num(t.latest_daily_close)}，价差 ${pct(t.quote_vs_daily_close_pct)}。<br><span class="small">${t.note}</span>`;
+  renderChart(d.chart);
 }
-$('refresh').addEventListener('click',load); $('symbol').addEventListener('keydown',e=>{if(e.key==='Enter') load()}); loadSymbols(); load(); timer=setInterval(load,20000);
+async function loadSymbols(){try{const r=await fetch('/api/symbols');const rows=await r.json();$('symbol-list').innerHTML=rows.map(x=>`<option value="${x.code}">${x.name}</option>`).join('')}catch(e){}}
+async function loadAnalysis(code){const n=++requestNo;try{const res=await fetch(`/api/analyze?symbol=${encodeURIComponent(code)}`);const d=await res.json();if(!res.ok)throw new Error(d.detail||'单只行情读取失败');if(n===requestNo)renderAnalysis(d)}catch(e){if(n===requestNo)showError(e.message||'读取失败')}}
+async function scan(){clearError();setStatus('扫描中…');$('scan-body').classList.add('loading');try{const res=await fetch('/api/scan?limit=13');const d=await res.json();if(!res.ok)throw new Error(d.detail||'扫描失败');if(d.rows?.length&&!d.rows.some(x=>x.code===selectedCode))selectedCode=d.rows[0].code;renderScan(d.rows);$('scan-meta').textContent=`${d.rows.length} 只可用 · ${d.method} · 更新 ${d.updated_at}`;setStatus(`已更新 ${new Date().toLocaleTimeString('zh-CN',{hour12:false})}`,false);await loadAnalysis(selectedCode)}catch(e){showError(e.message||'扫描失败');setStatus('行情暂不可用',true)}finally{$('scan-body').classList.remove('loading')}}
+$('refresh').addEventListener('click',scan);$('open').addEventListener('click',()=>{selectedCode=$('symbol').value.trim();loadAnalysis(selectedCode)});$('symbol').addEventListener('keydown',e=>{if(e.key==='Enter'){$('open').click()}});loadSymbols();scan();refreshTimer=setInterval(scan,30000);
 </script>
 </body>
 </html>
